@@ -50,164 +50,11 @@
             }
         }
     });
-    
-    // CITY BUILDINGS RNG
-    AFRAME.registerComponent('city-buildings', {
 
-        schema: {
-            side: { type: 'string', default: 'right' },
-            count: { type: 'int', default: 18 },
-            spacing: { type: 'number', default: 56 },
-            startZ: { type: 'number', default: 470 }
-        },
-
-        init: function () {
-
-            const side = this.data.side;
-
-            // Different dark exterior colors
-            const buildingColors = [
-                '#151C29',
-                '#202633',
-                '#252A35',
-                '#171D27',
-                '#292D38'
-            ];
-
-            // Colors for illuminated windows
-            const windowColors = [
-                '#FFD58A',
-                '#FFE6B0',
-                '#A9D9FF',
-                '#D5C9FF'
-            ];
-
-            // Generate buildings along the highway
-            for (let i = 0; i < this.data.count; i++) {
-
-                const building = document.createElement('a-entity');
-
-                // Random building dimensions
-                const width = 24 + Math.random() * 12;
-                const height = 65 + Math.random() * 60;
-                const depth = 38 + Math.random() * 10;
-
-                // Place buildings below highway level
-                const baseY = -35;
-                const centerY = baseY + height / 2;
-
-                // Position buildings on opposite sides
-                let xPosition;
-
-                if (side === 'right') {
-                    xPosition = 51 + Math.random() * 8;
-                } else {
-                    xPosition = -84 - Math.random() * 8;
-                }
-
-                // Slight variation in distance along the highway
-                const zPosition =
-                    this.data.startZ -
-                    (i * this.data.spacing) +
-                    (Math.random() * 6 - 3);
-
-                // Main building structure
-                const structure = document.createElement('a-box');
-
-                structure.setAttribute('width', width);
-                structure.setAttribute('height', height);
-                structure.setAttribute('depth', depth);
-
-                structure.setAttribute('position', {
-                    x: xPosition,
-                    y: centerY,
-                    z: zPosition
-                });
-
-                structure.setAttribute('material', {
-                    color: buildingColors[
-                        Math.floor(Math.random() * buildingColors.length)
-                    ],
-                    roughness: 0.85,
-                    metalness: 0.2
-                });
-
-                building.appendChild(structure);
-
-                // Small rooftop structure to add variation
-                const rooftop = document.createElement('a-box');
-
-                rooftop.setAttribute('width', width * 0.65);
-                rooftop.setAttribute('height', 2);
-                rooftop.setAttribute('depth', depth * 0.65);
-
-                rooftop.setAttribute('position', {
-                    x: xPosition,
-                    y: baseY + height + 1,
-                    z: zPosition
-                });
-
-                rooftop.setAttribute('color', '#101722');
-
-                building.appendChild(rooftop);
-
-                // Determine which face points toward the highway
-                const windowX = side === 'right'
-                    ? xPosition - width / 2 - 0.08
-                    : xPosition + width / 2 + 0.08;
-
-                // Add scattered illuminated windows
-                for (
-                    let y = baseY + 6;
-                    y < baseY + height - 5;
-                    y += 7
-                ) {
-
-                    for (
-                        let z = -depth / 2 + 3;
-                        z < depth / 2 - 2;
-                        z += 5
-                    ) {
-
-                        // Leave some windows dark
-                        if (Math.random() > 0.48) continue;
-
-                        const window = document.createElement('a-box');
-
-                        window.setAttribute('width', 0.12);
-                        window.setAttribute('height', 1.8);
-                        window.setAttribute('depth', 2);
-
-                        window.setAttribute('position', {
-                            x: windowX,
-                            y: y,
-                            z: zPosition + z
-                        });
-
-                        const windowColor = windowColors[
-                            Math.floor(Math.random() * windowColors.length)
-                        ];
-
-                        window.setAttribute('material', {
-                            color: windowColor,
-                            emissive: windowColor,
-                            emissiveIntensity: 0.8
-                        });
-
-                        building.appendChild(window);
-                    }
-                }
-
-                // Add the completed building to the scene
-                this.el.appendChild(building);
-            }
-        }
-    });
 </script>
 
 <body>
     <a-scene>
-
         <!-- INVISIBLE LANE DIVIDER TEMPLATE -->
         <a-box
             id="lane-divider-template"
@@ -219,7 +66,34 @@
         </a-box>
 
         <!-- SKY (color="#050817")-->
-        <a-sky src="nightsky3.jpg" radius="2000"></a-sky>
+        <a-sky src="Assets/nightsky3.jpg" radius="2000"></a-sky>
+
+        <!-- NIGHTTIME LIGHTING -->
+
+        <a-light
+            type="ambient"
+            color="#526080"
+            intensity="2.45">
+        </a-light>
+
+        
+
+        <a-light
+            type="directional"
+            position="0 150 -150"
+            rotation="-90 0 0"
+            color="#FFD9A0"
+            intensity="0.65">
+        </a-light>
+
+        <!-- SOFT WHITE LIGHT FROM ABOVE -->
+        <a-light
+            type="directional"
+            position="-33 150 150"
+            rotation="-90 0 0"
+            color="#FFF4E5"
+            intensity="0.45">
+        </a-light>
 
         <!-- HIGHWAY PLANE -->
         <a-plane
@@ -227,7 +101,7 @@
             rotation="-90 0 0"
             width="27"
             height="1000"
-            color="#202127">
+            material="color: #242529; roughness: 1; metalness: 0">
         </a-plane>
 
         <!-- AWAY HIGHWAY PLANE -->
@@ -245,7 +119,7 @@
             rotation="-90 0 0"
             width="9"
             height="1000"
-            color="#272B30">
+            material="color: #2C2D30; roughness: 1; metalness: 0">
         </a-plane>
 
         <!-- AWAY OUTER SHOULDER -->
@@ -254,7 +128,7 @@
             rotation="-90 0 0"
             width="9"
             height="1000"
-            color="#272B30">
+            material="color: #2C2D30; roughness: 1; metalness: 0">
         </a-plane>
         
         <!-- INNER SHOULDER -->
@@ -263,7 +137,7 @@
             rotation="-90 0 0"
             width="3"
             height="1000"
-            color="#272B30">
+            material="color: #2C2D30; roughness: 1; metalness: 0">
         </a-plane>
 
         <!-- AWAY INNER SHOULDER -->
@@ -383,10 +257,10 @@
                     color="#3B3D40"></a-cylinder>
 
                 <a-sphere position="-5 15 0"
-                    radius="0.5"
+                    radius="0.8"
                     theta-start="80"
                     theta-length="160"
-                    color="#F9F871"></a-sphere>
+                    material="color: #FCF7EB; emissive: #FFE680; emissiveIntensity: 3"></a-sphere>
             </a-entity>
 
             <!-- LEFT / AWAY-SIDE LIGHT TEMPLATE -->
@@ -405,10 +279,10 @@
                     color="#3B3D40"></a-cylinder>
 
                 <a-sphere position="5 15 0"
-                    radius="0.5"
+                    radius="0.8"
                     theta-start="80"
                     theta-length="160"
-                    color="#F9F871"></a-sphere>
+                    material="color: #FCF7EB; emissive: #FFE680; emissiveIntensity: 3"></a-sphere>
             </a-entity>
 
             <!-- REPEAT RIGHT-SIDE LIGHTS -->
@@ -427,135 +301,1097 @@
 
         <!-- SKYSCRAPER PROTOTYPES -->
 
-        <a-box position="58 85 380"
-            width="34" height="240" depth="44"
-            color="#18212D"></a-box>
-        <a-box position="58 206 380"
-            width="36" height="2" depth="46"
-            color="#18212D"></a-box>
-
-        <a-box position="60 40 210"
-            width="42" height="150" depth="48"
-            color="#18212D"></a-box>
-        <a-box position="60 145 210"
-            width="34" height="60" depth="40"
-            color="#18212D"></a-box>
-        <a-box position="60 195 210"
-            width="24" height="40" depth="30"
-            color="#18212D"></a-box>
-
-        <a-box position="65 105 40"
-            width="30" height="280" depth="36"
-            color="#18212D"></a-box>
-        <a-box position="65 251 40"
-            width="22" height="12" depth="28"
-            color="#18212D"></a-box>
-        <a-cylinder position="65 275 40"
-            radius="0.6" height="36"
-            color="#18212D"></a-cylinder>
-
-        <a-box position="61 80 -130"
-            width="38" height="230" depth="42"
-            color="#18212D"></a-box>
-
-        <a-box position="41.7 80 -144"
-            width="0.8" height="225" depth="2"
-            color="#18212D"></a-box>
-        <a-box position="41.7 80 -135"
-            width="0.8" height="225" depth="2"
-            color="#18212D"></a-box>
-        <a-box position="41.7 80 -125"
-            width="0.8" height="225" depth="2"
-            color="#18212D"></a-box>
-        <a-box position="41.7 80 -116"
-            width="0.8" height="225" depth="2"
-            color="#18212D"></a-box>
-
-        <a-box position="63 30 -290"
-            width="42" height="130" depth="46"
-            color="#18212D"></a-box>
-        <a-box position="67 125 -290"
-            width="34" height="70" depth="38"
-            color="#18212D"></a-box>
-        <a-box position="70 180 -290"
-            width="26" height="40" depth="30"
-            color="#18212D"></a-box>
-
-        <a-box position="60 85 -450"
-            width="36" height="240" depth="42"
-            color="#18212D"></a-box>
-        <a-box position="60 210 -450"
-            width="30" height="10" depth="36"
-            color="#18212D"></a-box>
-        <a-box position="60 218 -450"
-            width="26" height="6" depth="32"
-            color="#18212D"></a-box>
-
-        <a-box position="-92 35 380"
-            width="44" height="140" depth="46"
-            color="#18212D"></a-box>
-        <a-box position="-92 135 380"
-            width="34" height="60" depth="38"
-            color="#18212D"></a-box>
-        <a-box position="-92 185 380"
-            width="24" height="40" depth="28"
-            color="#18212D"></a-box>
-
-        <a-box position="-91 90 210"
-            width="38" height="250" depth="44"
-            color="#18212D"></a-box>
-        <a-box position="-71.7 90 195"
-            width="0.8" height="245" depth="2"
-            color="#18212D"></a-box>
-        <a-box position="-71.7 90 205"
-            width="0.8" height="245" depth="2"
-            color="#18212D"></a-box>
-        <a-box position="-71.7 90 215"
-            width="0.8" height="245" depth="2"
-            color="#18212D"></a-box>
-        <a-box position="-71.7 90 225"
-            width="0.8" height="245" depth="2"
-            color="#18212D"></a-box>
-
-        <a-box position="-94 75 40"
-            width="36" height="220" depth="48"
-            color="#18212D"></a-box>
-        <a-box position="-94 186 40"
-            width="38" height="2" depth="50"
-            color="#18212D"></a-box>
-
-        <a-box position="-96 105 -130"
-            width="32" height="280" depth="38"
-            color="#18212D"></a-box>
-        <a-box position="-96 251 -130"
-            width="24" height="12" depth="30"
-            color="#18212D"></a-box>
-        <a-cylinder position="-96 275 -130"
-            radius="0.6" height="36"
-            color="#18212D"></a-cylinder>
-
-        <a-box position="-92 80 -290"
-            width="40" height="230" depth="44"
-            color="#18212D"></a-box>
-        <a-box position="-92 200 -290"
-            width="34" height="10" depth="38"
-            color="#18212D"></a-box>
-        <a-box position="-92 208 -290"
-            width="28" height="6" depth="32"
-            color="#18212D"></a-box>
-
-        <a-box position="-95 30 -450"
-            width="44" height="130" depth="48"
-            color="#18212D"></a-box>
-        <a-box position="-99 125 -450"
-            width="36" height="70" depth="40"
-            color="#18212D"></a-box>
-        <a-box position="-102 180 -450"
-            width="28" height="40" depth="32"
-            color="#18212D"></a-box>
-
-
+        <!-- 3- LEVEL TOWERS -->
+        <a-entity position="70 70 -30">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
         </a-entity>
+
+        <a-entity position="-100 30 -400">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="80 50 400">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-100 30 150">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-100 100 -120">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="60 -10 -200">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="145 45 440">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45" color="#18212D"></a-box>
+            <a-box width="40" height="425" depth="40" color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="140 60 -65">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45" color="#18212D"></a-box>
+            <a-box width="40" height="425" depth="40" color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-175 35 270">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45" color="#18212D"></a-box>
+            <a-box width="40" height="425" depth="40" color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-185 30 -260">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45" color="#18212D"></a-box>
+            <a-box width="40" height="425" depth="40" color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <!-- 4- LEVEL TOWER -->
+        <a-entity position="70 50 -125">
+            <a-box position="0 0 0"
+                width="60" height="125" depth="60"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="52" height="250" depth="52"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="325" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="38" height="400" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-110 50 -30">
+            <a-box position="0 0 0"
+                width="60" height="125" depth="60"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="52" height="250" depth="52"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="325" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="38" height="400" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-110 50 400">
+            <a-box position="0 0 0"
+                width="60" height="125" depth="60"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="52" height="250" depth="52"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="325" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="38" height="400" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="80 35 -400">
+            <a-box position="0 0 0"
+                width="60" height="125" depth="60"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="52" height="250" depth="52"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="325" depth="45"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="38" height="400" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="135 20 310">
+            <a-box width="60" height="125" depth="60" color="#18212D"></a-box>
+            <a-box width="52" height="250" depth="52" color="#18212D"></a-box>
+            <a-box width="45" height="325" depth="45" color="#18212D"></a-box>
+            <a-box width="38" height="400" depth="38" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="150 30 -250">
+            <a-box width="60" height="125" depth="60" color="#18212D"></a-box>
+            <a-box width="52" height="250" depth="52" color="#18212D"></a-box>
+            <a-box width="45" height="325" depth="45" color="#18212D"></a-box>
+            <a-box width="38" height="400" depth="38" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-180 45 455">
+            <a-box width="60" height="125" depth="60" color="#18212D"></a-box>
+            <a-box width="52" height="250" depth="52" color="#18212D"></a-box>
+            <a-box width="45" height="325" depth="45" color="#18212D"></a-box>
+            <a-box width="38" height="400" depth="38" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-175 60 -85">
+            <a-box width="60" height="125" depth="60" color="#18212D"></a-box>
+            <a-box width="52" height="250" depth="52" color="#18212D"></a-box>
+            <a-box width="45" height="325" depth="45" color="#18212D"></a-box>
+            <a-box width="38" height="400" depth="38" color="#18212D"></a-box>
+        </a-entity>
+
+        <!-- RIBBED TOWER -->>
+        <a-entity position="-95 0 40">
+            <a-box position="0 90 0"
+                width="38" height="250" depth="44"
+                color="#18212D"></a-box>
+            <!-- Front side -->
+            <a-box position="-15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Back side -->
+            <a-box position="-15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Left side -->
+            <a-box position="-19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <!-- Right side -->
+            <a-box position="19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-100 0 -300">
+            <a-box position="0 90 0"
+                width="38" height="250" depth="44"
+                color="#18212D"></a-box>
+            <!-- Front side -->
+            <a-box position="-15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Back side -->
+            <a-box position="-15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Left side -->
+            <a-box position="-19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <!-- Right side -->
+            <a-box position="19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="60 0 50">
+            <a-box position="0 90 0"
+                width="38" height="250" depth="44"
+                color="#18212D"></a-box>
+            <!-- Front side -->
+            <a-box position="-15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Back side -->
+            <a-box position="-15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Left side -->
+            <a-box position="-19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <!-- Right side -->
+            <a-box position="19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="60 0 300">
+            <a-box position="0 90 0"
+                width="38" height="250" depth="44"
+                color="#18212D"></a-box>
+            <!-- Front side -->
+            <a-box position="-15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Back side -->
+            <a-box position="-15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Left side -->
+            <a-box position="-19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <!-- Right side -->
+            <a-box position="19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-105 0 500">
+            <a-box position="0 90 0"
+                width="38" height="250" depth="44"
+                color="#18212D"></a-box>
+            <!-- Front side -->
+            <a-box position="-15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Back side -->
+            <a-box position="-15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Left side -->
+            <a-box position="-19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <!-- Right side -->
+            <a-box position="19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="80 0 -475">
+            <a-box position="0 90 0"
+                width="38" height="250" depth="44"
+                color="#18212D"></a-box>
+            <!-- Front side -->
+            <a-box position="-15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 -22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Back side -->
+            <a-box position="-15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="-5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="5 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <a-box position="15 90 22.3" width="2" height="245" depth="0.8" color="#18212D"></a-box>
+            <!-- Left side -->
+            <a-box position="-19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="-19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <!-- Right side -->
+            <a-box position="19.3 90 -15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 -5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 5" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+            <a-box position="19.3 90 15" width="0.8" height="245" depth="2" color="#18212D"></a-box>
+        </a-entity>
+
+        <!-- MONOLITH-->
+        <a-entity position="-110 0 -190">
+            <a-box position="0 0 0"
+                width="50" height="400" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 200 0"
+                width="55" height="10" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="75 0 230">
+            <a-box position="0 0 0"
+                width="50" height="400" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 200 0"
+                width="55" height="10" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-100 10 320">
+            <a-box position="0 0 0"
+                width="50" height="400" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 200 0"
+                width="55" height="10" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <!-- 2-LEVEL BUILDING -->
+        <a-entity position="75 0 135">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-100 0 225">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="80 30 475">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="75 0 -300">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-105 0 -500">
+            <a-box position="0 0 0"
+                width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box position="0 0 0"
+                width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="150 15 175">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="375" depth="45" color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3" radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="140 40 -420">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="375" depth="45" color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3" radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-185 20 100">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="375" depth="45" color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3" radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-175 50 -445">
+            <a-box width="50" height="200" depth="50" color="#18212D"></a-box>
+            <a-box width="45" height="375" depth="45" color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3" radius="0.75" height="500" color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <!-- THIRD ROW OF BUILDINGS -->
+        <a-entity position="225 10 480">
+            <a-box width="55" height="120" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="45" height="240" depth="45"
+                color="#18212D"></a-box>
+            <a-box width="35" height="350" depth="35"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="240 45 325">
+            <a-box width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="500"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="215 0 170">
+            <a-box width="60" height="290" depth="55"
+                color="#18212D"></a-box>
+            <a-box position="0 145 0"
+                width="62" height="5" depth="57"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="250 35 20">
+            <a-box width="60" height="125" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="52" height="250" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="45" height="325" depth="45"
+                color="#18212D"></a-box>
+            <a-box width="38" height="400" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="225 0 -140">
+            <a-box width="55" height="180" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="340" depth="42"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="245 45 -305">
+            <a-box width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="480"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="220 10 -475">
+            <a-box width="58" height="150" depth="58"
+                color="#18212D"></a-box>
+            <a-box width="46" height="240" depth="46"
+                color="#18212D"></a-box>
+            <a-box width="34" height="300" depth="34"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-265 40 485">
+            <a-box width="60" height="125" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="52" height="250" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="45" height="325" depth="45"
+                color="#18212D"></a-box>
+            <a-box width="38" height="400" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-250 5 335">
+            <a-box width="58" height="300" depth="55"
+                color="#18212D"></a-box>
+            <a-box position="0 150 0"
+                width="60" height="5" depth="57"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-270 35 180">
+            <a-box width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box width="45" height="375" depth="45"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 -3"
+                radius="0.75" height="480"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-255 0 25">
+            <a-box width="60" height="150" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="48" height="260" depth="48"
+                color="#18212D"></a-box>
+            <a-box width="36" height="360" depth="36"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-275 30 -130">
+            <a-box width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box width="40" height="390" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="390"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-250 0 -300">
+            <a-box width="55" height="160" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="280" depth="42"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-265 40 -470">
+            <a-box width="50" height="200" depth="50"
+                color="#18212D"></a-box>
+            <a-box width="45" height="350" depth="45"
+                color="#18212D"></a-box>
+            <a-box width="40" height="425" depth="40"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="430"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <!-- FOURTH LAYER OF BUILDINGS -->
+        <a-entity position="325 20 405">
+            <a-box width="70" height="160" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="58" height="300" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="410" depth="42"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="340 35 240">
+            <a-box width="75" height="180" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="58" height="330" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="40" height="440" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="320 0 90">
+            <a-box width="80" height="170" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="60" height="310" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="44" height="380" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="345 25 -55">
+            <a-box width="70" height="180" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="55" height="350" depth="50"
+                color="#18212D"></a-box>
+            <a-box width="38" height="470" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="325 10 -205">
+            <a-box width="80" height="200" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="62" height="360" depth="58"
+                color="#18212D"></a-box>
+            <a-box width="44" height="420" depth="42"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="335 40 -380">
+            <a-box width="75" height="190" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="58" height="370" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="460" depth="42"
+                color="#18212D"></a-box>
+            <a-cylinder position="8 0 0"
+                radius="0.75" height="530"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="325 10 -525">
+            <a-box width="80" height="200" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="60" height="340" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="420" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-355 25 400">
+            <a-box width="75" height="180" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="60" height="340" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="450" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-370 15 215">
+            <a-box width="80" height="190" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="62" height="350" depth="58"
+                color="#18212D"></a-box>
+            <a-box width="45" height="420" depth="42"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-350 0 60">
+            <a-box width="75" height="160" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="58" height="320" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="40" height="400" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-365 35 -45">
+            <a-box width="80" height="200" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="62" height="380" depth="58"
+                color="#18212D"></a-box>
+            <a-box width="45" height="470" depth="42"
+                color="#18212D"></a-box>
+            <a-cylinder position="-8 0 -3"
+                radius="0.75" height="540"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-350 10 -205">
+            <a-box width="75" height="180" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="58" height="340" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="42" height="430" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-370 20 -375">
+            <a-box width="80" height="200" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="60" height="360" depth="58"
+                color="#18212D"></a-box>
+            <a-box width="42" height="450" depth="42"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-355 10 -525">
+            <a-box width="75" height="180" depth="70"
+                color="#18212D"></a-box>
+            <a-box width="58" height="350" depth="55"
+                color="#18212D"></a-box>
+            <a-box width="40" height="440" depth="40"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <!-- BUILDINGS AT THE END OF THE ROAD -->
+        <a-entity position="-115 25 -520">
+            <a-box width="65" height="180" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="52" height="340" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="38" height="420" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="105 35 -520">
+            <a-box width="65" height="180" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="52" height="370" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="38" height="450" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-65 10 -575">
+            <a-box width="60" height="180" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="48" height="310" depth="48"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="65 20 -575">
+            <a-box width="60" height="180" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="48" height="350" depth="48"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="0 30 -620">
+            <a-box width="65" height="200" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="52" height="380" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="38" height="460" depth="38"
+                color="#18212D"></a-box>
+            <a-cylinder position="0 0 0"
+                radius="0.75" height="520"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-180 0 -560">
+            <a-box width="75" height="160" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="55" height="300" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="175 15 -560">
+            <a-box width="75" height="160" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="55" height="330" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+
+
+        <a-entity position="-115 35 520">
+            <a-box width="65" height="180" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="52" height="370" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="38" height="450" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="105 25 520">
+            <a-box width="65" height="180" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="52" height="340" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="38" height="420" depth="38"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="-65 20 575">
+            <a-box width="60" height="180" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="48" height="350" depth="48"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="65 10 575">
+            <a-box width="60" height="180" depth="60"
+                color="#18212D"></a-box>
+            <a-box width="48" height="310" depth="48"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="0 30 620">
+            <a-box width="65" height="200" depth="65"
+                color="#18212D"></a-box>
+            <a-box width="52" height="380" depth="52"
+                color="#18212D"></a-box>
+            <a-box width="38" height="460" depth="38"
+                color="#18212D"></a-box>
+            <a-cylinder position="0 0 0"
+                radius="0.75" height="520"
+                color="#18212D"></a-cylinder>
+        </a-entity>
+
+        <a-entity position="-180 15 560">
+            <a-box width="75" height="160" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="55" height="330" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+
+        <a-entity position="175 0 560">
+            <a-box width="75" height="160" depth="75"
+                color="#18212D"></a-box>
+            <a-box width="55" height="300" depth="55"
+                color="#18212D"></a-box>
+        </a-entity>
+        
+
+        <!-- WARM AFTERHOURS TOWER LIGHTS: 38 TOWERS -->
+
+        <!-- 1. RIGHT FRONT TOWER - WARM AMBER -->
+                <a-light type="point" position="35 120 -30"
+                    color="#FFD19A" intensity="5" distance="200" decay="1"></a-light>
+
+                <a-box position="47 210 -30" width="1" height="60" depth="12"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+                <a-box position="44.3 105 -30" width="1" height="70" depth="14"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+        <!-- 2. LEFT FRONT TOWER - WARM WHITE -->
+                <a-light type="point" position="-75 120 -30"
+                    color="#FFF4DE" intensity="5" distance="200" decay="1"></a-light>
+
+                <a-box position="-87 175 -30" width="1" height="55" depth="12"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+                <a-box position="-79.3 75 -30" width="1" height="65" depth="14"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+        <!-- 3. RIGHT MID TOWER - WARM WHITE -->
+                <a-light type="point" position="32 90 -200"
+                    color="#FFE9C9" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="37 165 -200" width="1" height="50" depth="10"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+                <a-box position="34.3 20 -200" width="1" height="65" depth="14"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+        <!-- 4. LEFT MID TOWER - WARM WHITE -->
+                <a-light type="point" position="-70 110 -190"
+                    color="#FFF8EA" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="-85 200 -190" width="1" height="65" depth="12"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+                <a-box position="-84.3 45 -190" width="1" height="75" depth="14"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+        <!-- 5. RIGHT POSITIVE-Z TOWER - WARM AMBER -->
+                <a-light type="point" position="38 100 135"
+                    color="#FFBD80" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="52 175 135" width="1" height="55" depth="10"
+                    material="shader: flat; color: #FFBD80"></a-box>
+
+                <a-box position="49.3 40 135" width="1" height="70" depth="14"
+                    material="shader: flat; color: #FFBD80"></a-box>
+
+        <!-- 6. LEFT POSITIVE-Z TOWER - WARM WHITE -->
+                <a-light type="point" position="-68 95 150"
+                    color="#FFE9C9" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="-82 185 150" width="1" height="60" depth="10"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+                <a-box position="-74.3 40 150" width="1" height="70" depth="14"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+        <!-- 7. RIGHT FAR TOWER - WARM WHITE -->
+                <a-light type="point" position="45 135 400"
+                    color="#FFE9C9" intensity="5" distance="220" decay="1"></a-light>
+
+                <a-box position="57 220 400" width="1" height="75" depth="14"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+                <a-box position="54.3 85 400" width="1" height="70" depth="14"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+        <!-- 8. LEFT FAR TOWER - WARM WHITE -->
+                <a-light type="point" position="-78 120 400"
+                    color="#FFF1D5" intensity="5" distance="220" decay="1"></a-light>
+
+                <a-box position="-92 210 400" width="1" height="70" depth="14"
+                    material="shader: flat; color: #FFF1D5"></a-box>
+
+                <a-box position="-79.3 85 400" width="1" height="65" depth="14"
+                    material="shader: flat; color: #FFF1D5"></a-box>
+
+        <!-- 13. RIGHT TOWER Z -125 - WARM AMBER -->
+                <a-light type="point" position="25 100 -125"
+                    color="#FFD19A" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="50.3 245 -125" width="1" height="30" depth="12"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+                <a-box position="39.3 80 -125" width="1" height="70" depth="16"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+        <!-- 14. LEFT TOWER Z -120 - WARM WHITE -->
+                <a-light type="point" position="-55 145 -120"
+                    color="#FFF4DE" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="-79.3 295 -120" width="1" height="50" depth="12"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+                <a-box position="-74.3 130 -120" width="1" height="75" depth="16"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+        <!-- 15. RIGHT TOWER Z -300 - WARM WHITE -->
+                <a-light type="point" position="30 105 -300"
+                    color="#FFF4DE" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="51.8 145 -300" width="1" height="65" depth="12"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+                <a-box position="49.3 40 -300" width="1" height="70" depth="16"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+        <!-- 16. LEFT TOWER Z -400 - WARM WHITE -->
+                <a-light type="point" position="-55 120 -400"
+                    color="#FFF8EA" intensity="4.5" distance="180" decay="1"></a-light>
+
+                <a-box position="-79.3 245 -400" width="1" height="55" depth="12"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+                <a-box position="-74.3 65 -400" width="1" height="70" depth="16"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+        <!-- 29. RIGHT RIBBED TOWER / Z +50 / MAGENTA -->
+                <a-light type="point" position="32 105 50"
+                    color="#FFBD80" intensity="4" distance="155" decay="1"></a-light>
+
+                <a-box position="39.5 165 50" width="1" height="70" depth="10"
+                    material="shader: flat; color: #FFBD80"></a-box>
+
+                <a-box position="39.5 35 50" width="1" height="65" depth="10"
+                    material="shader: flat; color: #FFBD80"></a-box>
+
+        <!-- 30. RIGHT RIBBED TOWER / Z +300 / BLUE -->
+                <a-light type="point" position="32 105 300"
+                    color="#FFE9C9" intensity="4" distance="155" decay="1"></a-light>
+
+                <a-box position="39.5 165 300" width="1" height="70" depth="10"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+                <a-box position="39.5 35 300" width="1" height="65" depth="10"
+                    material="shader: flat; color: #FFE9C9"></a-box>
+
+        <!-- 31. RIGHT RIBBED TOWER / Z -475 / RED -->
+                <a-light type="point" position="50 105 -475"
+                    color="#FFDFA2" intensity="4" distance="155" decay="1"></a-light>
+
+                <a-box position="59.5 165 -475" width="1" height="70" depth="10"
+                    material="shader: flat; color: #FFDFA2"></a-box>
+
+                <a-box position="59.5 35 -475" width="1" height="65" depth="10"
+                    material="shader: flat; color: #FFDFA2"></a-box>
+
+        <!-- 32. LEFT RIBBED TOWER / Z +40 / VIOLET -->
+                <a-light type="point" position="-58 105 40"
+                    color="#FFF1D5" intensity="4" distance="155" decay="1"></a-light>
+
+                <a-box position="-74.5 165 40" width="1" height="70" depth="10"
+                    material="shader: flat; color: #FFF1D5"></a-box>
+
+                <a-box position="-74.5 35 40" width="1" height="65" depth="10"
+                    material="shader: flat; color: #FFF1D5"></a-box>
+
+        <!-- 33. LEFT RIBBED TOWER / Z -300 / CYAN -->
+                <a-light type="point" position="-60 105 -300"
+                    color="#FFE6B8" intensity="4" distance="155" decay="1"></a-light>
+
+                <a-box position="-79.5 165 -300" width="1" height="70" depth="10"
+                    material="shader: flat; color: #FFE6B8"></a-box>
+
+                <a-box position="-79.5 35 -300" width="1" height="65" depth="10"
+                    material="shader: flat; color: #FFE6B8"></a-box>
+
+        <!-- 34. LEFT RIBBED TOWER / Z +500 / PINK -->
+                <a-light type="point" position="-65 105 500"
+                    color="#FFF8EA" intensity="4" distance="155" decay="1"></a-light>
+
+                <a-box position="-84.5 165 500" width="1" height="70" depth="10"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+                <a-box position="-84.5 35 500" width="1" height="65" depth="10"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+        <!-- 35. RIGHT FOUR-LEVEL TOWER / Z -400 / PURPLE -->
+                <a-light type="point" position="35 120 -400"
+                    color="#FFC58C" intensity="4.5" distance="185" decay="1"></a-light>
+
+                <a-box position="60.5 210 -400" width="1" height="45" depth="12"
+                    material="shader: flat; color: #FFC58C"></a-box>
+
+                <a-box position="49.5 55 -400" width="1" height="65" depth="17"
+                    material="shader: flat; color: #FFC58C"></a-box>
+
+        <!-- 36. LEFT MONOLITH / Z +320 / CRIMSON -->
+                <a-light type="point" position="-60 120 320"
+                    color="#FFE8C5" intensity="4.5" distance="185" decay="1"></a-light>
+
+                <a-box position="-74.5 165 320" width="1" height="65" depth="13"
+                    material="shader: flat; color: #FFE8C5"></a-box>
+
+                <a-box position="-74.5 45 320" width="1" height="70" depth="17"
+                    material="shader: flat; color: #FFE8C5"></a-box>
+
+        <!-- 37. LEFT TWO-LEVEL TOWER / Z +225 / PINK -->
+                <a-light type="point" position="-60 100 225"
+                    color="#FFD19A" intensity="4.5" distance="185" decay="1"></a-light>
+
+                <a-box position="-77 155 225" width="1" height="60" depth="12"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+                <a-box position="-74.5 45 225" width="1" height="70" depth="17"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+        <!-- 38. LEFT TWO-LEVEL TOWER / Z -500 / BLUE -->
+                <a-light type="point" position="-65 100 -500"
+                    color="#FFF4DE" intensity="4.5" distance="185" decay="1"></a-light>
+
+                <a-box position="-82 155 -500" width="1" height="60" depth="12"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+                <a-box position="-79.5 45 -500" width="1" height="70" depth="17"
+                    material="shader: flat; color: #FFF4DE"></a-box>
 
             <!-- CAMERA -->
             <a-camera position="0 3 0"></a-camera>
