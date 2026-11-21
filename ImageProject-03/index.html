@@ -55,7 +55,7 @@
 
 <body>
     <a-scene>
-        <!-- INVISIBLE LANE DIVIDER TEMPLATE -->
+        <!-- LANE DIVIDER TEMPLATE -->
         <a-box
             id="lane-divider-template"
             visible="false"
@@ -69,14 +69,11 @@
         <a-sky src="Assets/nightsky3.jpg" radius="2000"></a-sky>
 
         <!-- NIGHTTIME LIGHTING -->
-
         <a-light
             type="ambient"
             color="#526080"
             intensity="2.45">
         </a-light>
-
-        
 
         <a-light
             type="directional"
@@ -1171,7 +1168,7 @@
         </a-entity>
         
 
-        <!-- WARM AFTERHOURS TOWER LIGHTS: 38 TOWERS -->
+        <!-- LIGHTS ON THE TOWERS -->
 
         <!-- 1. RIGHT FRONT TOWER - WARM AMBER -->
                 <a-light type="point" position="35 120 -30"
@@ -1303,7 +1300,7 @@
                 <a-box position="-74.3 65 -400" width="1" height="70" depth="16"
                     material="shader: flat; color: #FFF8EA"></a-box>
 
-        <!-- 17. RIGHT SECOND ROW / Z +440 / MAGENTA -->
+
                 <a-light type="point" position="105 110 440"
                     color="#FFBD80" intensity="4" distance="160" decay="1"></a-light>
 
@@ -1313,7 +1310,7 @@
                 <a-box position="119.3 70 440" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFBD80"></a-box>
 
-        <!-- 21. RIGHT SECOND ROW / Z -250 / CYAN -->
+
                 <a-light type="point" position="110 105 -250"
                     color="#FFE6B8" intensity="4" distance="160" decay="1"></a-light>
 
@@ -1323,7 +1320,7 @@
                 <a-box position="119.3 60 -250" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFE6B8"></a-box>
 
-        <!-- 22. LEFT SECOND ROW / Z +100 / HOT PINK -->
+
                 <a-light type="point" position="-145 100 100"
                     color="#FFF8EA" intensity="4" distance="160" decay="1"></a-light>
 
@@ -1333,7 +1330,7 @@
                 <a-box position="-159.3 55 100" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFF8EA"></a-box>
 
-        <!-- 23. RIGHT THIRD ROW / Z +480 / VIOLET -->
+
                 <a-light type="point" position="180 110 480"
                     color="#FFC58C" intensity="4" distance="170" decay="1"></a-light>
 
@@ -1343,7 +1340,7 @@
                 <a-box position="196.8 35 480" width="1" height="45" depth="18"
                     material="shader: flat; color: #FFC58C"></a-box>
 
-        <!-- 24. RIGHT THIRD ROW / Z +325 / RED -->
+
                 <a-light type="point" position="195 120 325"
                     color="#FFE8C5" intensity="4" distance="170" decay="1"></a-light>
 
@@ -1353,7 +1350,7 @@
                 <a-box position="214.3 75 325" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFE8C5"></a-box>
 
-        <!-- 25. RIGHT THIRD ROW / Z +20 / PINK -->
+
                 <a-light type="point" position="205 120 20"
                     color="#FFD19A" intensity="4" distance="170" decay="1"></a-light>
 
@@ -1363,7 +1360,7 @@
                 <a-box position="219.3 65 20" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFD19A"></a-box>
 
-        <!-- 26. LEFT THIRD ROW / Z +485 / BLUE -->
+
                 <a-light type="point" position="-215 120 485"
                     color="#FFF4DE" intensity="4" distance="170" decay="1"></a-light>
 
@@ -1373,7 +1370,7 @@
                 <a-box position="-234.3 75 485" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFF4DE"></a-box>
 
-        <!-- 27. LEFT THIRD ROW / Z +25 / CYAN -->
+
                 <a-light type="point" position="-205 100 25"
                     color="#FFE1AF" intensity="4" distance="170" decay="1"></a-light>
 
@@ -1383,7 +1380,7 @@
                 <a-box position="-224.3 25 25" width="1" height="60" depth="18"
                     material="shader: flat; color: #FFE1AF"></a-box>
 
-        <!-- 28. LEFT THIRD ROW / Z -130 / MAGENTA -->
+
                 <a-light type="point" position="-225 110 -130"
                     color="#FFF8EA" intensity="4" distance="170" decay="1"></a-light>
 
@@ -1393,7 +1390,7 @@
                 <a-box position="-249.3 60 -130" width="1" height="65" depth="18"
                     material="shader: flat; color: #FFF8EA"></a-box>
 
-        <!-- 29. RIGHT RIBBED TOWER / Z +50 / MAGENTA -->
+
                 <a-light type="point" position="32 105 50"
                     color="#FFBD80" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1403,7 +1400,7 @@
                 <a-box position="39.5 35 50" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFBD80"></a-box>
 
-        <!-- 30. RIGHT RIBBED TOWER / Z +300 / BLUE -->
+
                 <a-light type="point" position="32 105 300"
                     color="#FFE9C9" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1413,7 +1410,7 @@
                 <a-box position="39.5 35 300" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFE9C9"></a-box>
 
-        <!-- 31. RIGHT RIBBED TOWER / Z -475 / RED -->
+
                 <a-light type="point" position="50 105 -475"
                     color="#FFDFA2" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1423,7 +1420,7 @@
                 <a-box position="59.5 35 -475" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFDFA2"></a-box>
 
-        <!-- 32. LEFT RIBBED TOWER / Z +40 / VIOLET -->
+
                 <a-light type="point" position="-58 105 40"
                     color="#FFF1D5" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1433,7 +1430,7 @@
                 <a-box position="-74.5 35 40" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFF1D5"></a-box>
 
-        <!-- 33. LEFT RIBBED TOWER / Z -300 / CYAN -->
+
                 <a-light type="point" position="-60 105 -300"
                     color="#FFE6B8" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1443,7 +1440,7 @@
                 <a-box position="-79.5 35 -300" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFE6B8"></a-box>
 
-        <!-- 34. LEFT RIBBED TOWER / Z +500 / PINK -->
+
                 <a-light type="point" position="-65 105 500"
                     color="#FFF8EA" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1453,7 +1450,7 @@
                 <a-box position="-84.5 35 500" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFF8EA"></a-box>
 
-        <!-- 35. RIGHT FOUR-LEVEL TOWER / Z -400 / PURPLE -->
+
                 <a-light type="point" position="35 120 -400"
                     color="#FFC58C" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1463,7 +1460,7 @@
                 <a-box position="49.5 55 -400" width="1" height="65" depth="17"
                     material="shader: flat; color: #FFC58C"></a-box>
 
-        <!-- 36. LEFT MONOLITH / Z +320 / CRIMSON -->
+
                 <a-light type="point" position="-60 120 320"
                     color="#FFE8C5" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1473,7 +1470,7 @@
                 <a-box position="-74.5 45 320" width="1" height="70" depth="17"
                     material="shader: flat; color: #FFE8C5"></a-box>
 
-        <!-- 37. LEFT TWO-LEVEL TOWER / Z +225 / PINK -->
+
                 <a-light type="point" position="-60 100 225"
                     color="#FFD19A" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1483,7 +1480,7 @@
                 <a-box position="-74.5 45 225" width="1" height="70" depth="17"
                     material="shader: flat; color: #FFD19A"></a-box>
 
-        <!-- 38. LEFT TWO-LEVEL TOWER / Z -500 / BLUE -->
+
                 <a-light type="point" position="-65 100 -500"
                     color="#FFF4DE" intensity="4.5" distance="185" decay="1"></a-light>
 

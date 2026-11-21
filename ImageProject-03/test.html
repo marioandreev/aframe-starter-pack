@@ -3,59 +3,105 @@
 <head>
     <title>AFTERHOURS</title>
     <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+
+    <!-- BOUNDARIES -->
+    
+<!-- BOUNDARIES -->
+    <script>
+        AFRAME.registerComponent('highway-boundaries', {
+            tick: function () {
+                const position = this.el.object3D.position;
+
+                // Highway boundaries
+                position.x = THREE.MathUtils.clamp(position.x, -16, 20);
+                position.z = THREE.MathUtils.clamp(position.z, -410, 410);
+
+                // Car boundaries
+                const cars = [
+                    // McLaren
+                    { x: 0, z: -35, width: 2.2, length: 4.5 },
+
+                    // Ferrari
+                    { x: -9, z: -20, width: 2.5, length: 5 }
+                ];
+
+                cars.forEach(car => {
+                    const dx = position.x - car.x;
+                    const dz = position.z - car.z;
+
+                    if (Math.abs(dx) < car.width &&
+                        Math.abs(dz) < car.length) {
+
+                        // Push the camera outside the car's space
+                        const overlapX = car.width - Math.abs(dx);
+                        const overlapZ = car.length - Math.abs(dz);
+
+                        if (overlapX < overlapZ) {
+                            position.x = car.x +
+                                (dx >= 0 ? car.width : -car.width);
+                        } else {
+                            position.z = car.z +
+                                (dz >= 0 ? car.length : -car.length);
+                        }
+                    }
+                });
+            }
+        });
+    </script>
 </head>
 
-<script>
-    AFRAME.registerComponent('repeat-object', {
+    <!-- REPEAT LIGHTS AND DIVIDERS -->
+    <script>
+        AFRAME.registerComponent('repeat-object', {
 
-        schema: {
-            template: { type: 'selector' },
-            count: { type: 'int', default: 10 },
-            spacing: { type: 'number', default: 10 },
-            startZ: { type: 'number', default: 0 }
-        },
+            schema: {
+                template: { type: 'selector' },
+                count: { type: 'int', default: 10 },
+                spacing: { type: 'number', default: 10 },
+                startZ: { type: 'number', default: 0 }
+            },
 
-        init: function () {
+            init: function () {
 
-            const template = this.data.template;
+                const template = this.data.template;
 
-            if (!template) {
-                console.error('Repeat-object: Template not found!');
-                return;
+                if (!template) {
+                    console.error('Repeat-object: Template not found!');
+                    return;
+                }
+
+                for (let i = 0; i < this.data.count; i++) {
+
+                    // Make a copy of the original object
+                    const clone = template.cloneNode(true);
+
+                    // Remove the original ID
+                    clone.removeAttribute('id');
+
+                    // Make the copy visible
+                    clone.setAttribute('visible', true);
+
+                    // Calculate its new position
+                    const zPosition =
+                        this.data.startZ - (i * this.data.spacing);
+
+                    clone.setAttribute('position', {
+                        x: 0,
+                        y: 0,
+                        z: zPosition
+                    });
+
+                    // Add the copy to the scene
+                    this.el.appendChild(clone);
+                }
             }
+        });
 
-            for (let i = 0; i < this.data.count; i++) {
-
-                // Make a copy of the original object
-                const clone = template.cloneNode(true);
-
-                // Remove the original ID
-                clone.removeAttribute('id');
-
-                // Make the copy visible
-                clone.setAttribute('visible', true);
-
-                // Calculate its new position
-                const zPosition =
-                    this.data.startZ - (i * this.data.spacing);
-
-                clone.setAttribute('position', {
-                    x: 0,
-                    y: 0,
-                    z: zPosition
-                });
-
-                // Add the copy to the scene
-                this.el.appendChild(clone);
-            }
-        }
-    });
-
-</script>
+    </script>
 
 <body>
     <a-scene>
-        <!-- INVISIBLE LANE DIVIDER TEMPLATE -->
+        <!-- LANE DIVIDER TEMPLATE -->
         <a-box
             id="lane-divider-template"
             visible="false"
@@ -69,14 +115,11 @@
         <a-sky src="Assets/nightsky3.jpg" radius="2000"></a-sky>
 
         <!-- NIGHTTIME LIGHTING -->
-
         <a-light
             type="ambient"
             color="#526080"
             intensity="2.45">
         </a-light>
-
-        
 
         <a-light
             type="directional"
@@ -101,7 +144,7 @@
             rotation="-90 0 0"
             width="27"
             height="1000"
-            material="color: #242529; roughness: 1; metalness: 0">
+            color="#202127">
         </a-plane>
 
         <!-- AWAY HIGHWAY PLANE -->
@@ -119,7 +162,7 @@
             rotation="-90 0 0"
             width="9"
             height="1000"
-            material="color: #2C2D30; roughness: 1; metalness: 0">
+            color="#272B30">
         </a-plane>
 
         <!-- AWAY OUTER SHOULDER -->
@@ -128,7 +171,7 @@
             rotation="-90 0 0"
             width="9"
             height="1000"
-            material="color: #2C2D30; roughness: 1; metalness: 0">
+            color="#272B30">
         </a-plane>
         
         <!-- INNER SHOULDER -->
@@ -137,7 +180,7 @@
             rotation="-90 0 0"
             width="3"
             height="1000"
-            material="color: #2C2D30; roughness: 1; metalness: 0">
+            color="#272B30">
         </a-plane>
 
         <!-- AWAY INNER SHOULDER -->
@@ -146,7 +189,7 @@
             rotation="-90 0 0"
             width="3"
             height="1000"
-            color="#272B30">
+            material="color: #2C2D30; roughness: 1; metalness: 0">
         </a-plane>
 
         <!-- MEDIAN THING -->
@@ -1171,7 +1214,7 @@
         </a-entity>
         
 
-        <!-- WARM AFTERHOURS TOWER LIGHTS: 38 TOWERS -->
+        <!-- LIGHTS ON THE TOWERS -->
 
         <!-- 1. RIGHT FRONT TOWER - WARM AMBER -->
                 <a-light type="point" position="35 120 -30"
@@ -1253,6 +1296,16 @@
                 <a-box position="-79.3 85 400" width="1" height="65" depth="14"
                     material="shader: flat; color: #FFF1D5"></a-box>
 
+        <!-- 9. RIGHT DEEP SKYLINE - WARM AMBER -->
+                <a-light type="point" position="300 120 240"
+                    color="#FFE6B8" intensity="5" distance="250" decay="1"></a-light>
+
+                <a-box position="311 200 240" width="1.2" height="70" depth="14"
+                    material="shader: flat; color: #FFE6B8"></a-box>
+
+                <a-box position="301.8 75 240" width="1.2" height="70" depth="18"
+                    material="shader: flat; color: #FFE6B8"></a-box>
+
         <!-- 13. RIGHT TOWER Z -125 - WARM AMBER -->
                 <a-light type="point" position="25 100 -125"
                     color="#FFD19A" intensity="4.5" distance="180" decay="1"></a-light>
@@ -1293,7 +1346,97 @@
                 <a-box position="-74.3 65 -400" width="1" height="70" depth="16"
                     material="shader: flat; color: #FFF8EA"></a-box>
 
-        <!-- 29. RIGHT RIBBED TOWER / Z +50 / MAGENTA -->
+
+                <a-light type="point" position="105 110 440"
+                    color="#FFBD80" intensity="4" distance="160" decay="1"></a-light>
+
+                <a-box position="124.3 240 440" width="1" height="30" depth="12"
+                    material="shader: flat; color: #FFBD80"></a-box>
+
+                <a-box position="119.3 70 440" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFBD80"></a-box>
+
+
+                <a-light type="point" position="110 105 -250"
+                    color="#FFE6B8" intensity="4" distance="160" decay="1"></a-light>
+
+                <a-box position="131.3 210 -250" width="1" height="40" depth="12"
+                    material="shader: flat; color: #FFE6B8"></a-box>
+
+                <a-box position="119.3 60 -250" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFE6B8"></a-box>
+
+
+                <a-light type="point" position="-145 100 100"
+                    color="#FFF8EA" intensity="4" distance="160" decay="1"></a-light>
+
+                <a-box position="-162.3 185 100" width="1" height="50" depth="12"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+                <a-box position="-159.3 55 100" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+
+                <a-light type="point" position="180 110 480"
+                    color="#FFC58C" intensity="4" distance="170" decay="1"></a-light>
+
+                <a-box position="206.8 160 480" width="1" height="45" depth="12"
+                    material="shader: flat; color: #FFC58C"></a-box>
+
+                <a-box position="196.8 35 480" width="1" height="45" depth="18"
+                    material="shader: flat; color: #FFC58C"></a-box>
+
+
+                <a-light type="point" position="195 120 325"
+                    color="#FFE8C5" intensity="4" distance="170" decay="1"></a-light>
+
+                <a-box position="219.3 230 325" width="1" height="45" depth="12"
+                    material="shader: flat; color: #FFE8C5"></a-box>
+
+                <a-box position="214.3 75 325" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFE8C5"></a-box>
+
+
+                <a-light type="point" position="205 120 20"
+                    color="#FFD19A" intensity="4" distance="170" decay="1"></a-light>
+
+                <a-box position="230.3 210 20" width="1" height="45" depth="12"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+                <a-box position="219.3 65 20" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFD19A"></a-box>
+
+
+                <a-light type="point" position="-215 120 485"
+                    color="#FFF4DE" intensity="4" distance="170" decay="1"></a-light>
+
+                <a-box position="-245.3 220 485" width="1" height="45" depth="12"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+                <a-box position="-234.3 75 485" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFF4DE"></a-box>
+
+
+                <a-light type="point" position="-205 100 25"
+                    color="#FFE1AF" intensity="4" distance="170" decay="1"></a-light>
+
+                <a-box position="-236.3 150 25" width="1" height="45" depth="12"
+                    material="shader: flat; color: #FFE1AF"></a-box>
+
+                <a-box position="-224.3 25 25" width="1" height="60" depth="18"
+                    material="shader: flat; color: #FFE1AF"></a-box>
+
+
+                <a-light type="point" position="-225 110 -130"
+                    color="#FFF8EA" intensity="4" distance="170" decay="1"></a-light>
+
+                <a-box position="-254.3 210 -130" width="1" height="35" depth="12"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+                <a-box position="-249.3 60 -130" width="1" height="65" depth="18"
+                    material="shader: flat; color: #FFF8EA"></a-box>
+
+
                 <a-light type="point" position="32 105 50"
                     color="#FFBD80" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1303,7 +1446,7 @@
                 <a-box position="39.5 35 50" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFBD80"></a-box>
 
-        <!-- 30. RIGHT RIBBED TOWER / Z +300 / BLUE -->
+
                 <a-light type="point" position="32 105 300"
                     color="#FFE9C9" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1313,7 +1456,7 @@
                 <a-box position="39.5 35 300" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFE9C9"></a-box>
 
-        <!-- 31. RIGHT RIBBED TOWER / Z -475 / RED -->
+
                 <a-light type="point" position="50 105 -475"
                     color="#FFDFA2" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1323,7 +1466,7 @@
                 <a-box position="59.5 35 -475" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFDFA2"></a-box>
 
-        <!-- 32. LEFT RIBBED TOWER / Z +40 / VIOLET -->
+
                 <a-light type="point" position="-58 105 40"
                     color="#FFF1D5" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1333,7 +1476,7 @@
                 <a-box position="-74.5 35 40" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFF1D5"></a-box>
 
-        <!-- 33. LEFT RIBBED TOWER / Z -300 / CYAN -->
+
                 <a-light type="point" position="-60 105 -300"
                     color="#FFE6B8" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1343,7 +1486,7 @@
                 <a-box position="-79.5 35 -300" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFE6B8"></a-box>
 
-        <!-- 34. LEFT RIBBED TOWER / Z +500 / PINK -->
+
                 <a-light type="point" position="-65 105 500"
                     color="#FFF8EA" intensity="4" distance="155" decay="1"></a-light>
 
@@ -1353,7 +1496,7 @@
                 <a-box position="-84.5 35 500" width="1" height="65" depth="10"
                     material="shader: flat; color: #FFF8EA"></a-box>
 
-        <!-- 35. RIGHT FOUR-LEVEL TOWER / Z -400 / PURPLE -->
+
                 <a-light type="point" position="35 120 -400"
                     color="#FFC58C" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1363,7 +1506,7 @@
                 <a-box position="49.5 55 -400" width="1" height="65" depth="17"
                     material="shader: flat; color: #FFC58C"></a-box>
 
-        <!-- 36. LEFT MONOLITH / Z +320 / CRIMSON -->
+
                 <a-light type="point" position="-60 120 320"
                     color="#FFE8C5" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1373,7 +1516,7 @@
                 <a-box position="-74.5 45 320" width="1" height="70" depth="17"
                     material="shader: flat; color: #FFE8C5"></a-box>
 
-        <!-- 37. LEFT TWO-LEVEL TOWER / Z +225 / PINK -->
+
                 <a-light type="point" position="-60 100 225"
                     color="#FFD19A" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1383,7 +1526,7 @@
                 <a-box position="-74.5 45 225" width="1" height="70" depth="17"
                     material="shader: flat; color: #FFD19A"></a-box>
 
-        <!-- 38. LEFT TWO-LEVEL TOWER / Z -500 / BLUE -->
+
                 <a-light type="point" position="-65 100 -500"
                     color="#FFF4DE" intensity="4.5" distance="185" decay="1"></a-light>
 
@@ -1393,8 +1536,26 @@
                 <a-box position="-79.5 45 -500" width="1" height="70" depth="17"
                     material="shader: flat; color: #FFF4DE"></a-box>
 
+
+        <!-- MCLAREN -->
+        <a-entity
+            gltf-model="Assets/senna.glb"
+            position="0 0 -35"
+            rotation="0 180 0"
+            scale="1.45 1.45 1.45">
+        </a-entity>
+
+        <!-- FERARRI -->
+        <a-entity
+            gltf-model="Assets/ferarri.glb"
+            position="-9 0.2 -20"
+            rotation="0 180 0"
+            scale="2.1 2.1 2.1">
+        </a-entity>
+
             <!-- CAMERA -->
-            <a-camera position="0 3 0"></a-camera>
+            <a-camera position="0 2 0"
+            highway-boundaries></a-camera>
 
     </a-scene>
 </body>
