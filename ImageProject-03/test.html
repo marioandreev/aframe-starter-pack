@@ -1,0 +1,131 @@
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AFTERHOURS</title>
+    <script src="https://aframe.io/releases/1.7.1/aframe.min.js"></script>
+</head>
+
+<body>
+    <a-scene>
+
+        <!-- SKY --> <!--color="#050817"-->
+        <a-sky src="nightsky.jpg"></a-sky>
+
+        <!-- HIGHWAY PLANE -->
+        <a-plane
+            position="0 0 0"
+            rotation="-90 0 0"
+            width="27"
+            height="1000"
+            color="#202127">
+        </a-plane>
+
+        <!-- AWAY HIGHWAY PLANE -->
+        <a-plane
+            position="-35 0 0"
+            rotation="-90 0 0"
+            width="27"
+            height="1000"
+            color="#202127">
+        </a-plane>
+
+        <!-- OUTER SHOULDER-->
+        <a-plane
+            position="18 0 0"
+            rotation="-90 0 0"
+            width="9"
+            height="1000"
+            color="#383B42">
+        </a-plane>
+        
+        <!-- INNER SHOULDER -->
+        <a-plane
+            position="-15 0 0"
+            rotation="-90 0 0"
+            width="3"
+            height="1000"
+            color="#383B42">
+        </a-plane>
+
+        <!-- AWAY OUTER SHOULDER -->
+         <a-plane
+            position="-53 0 0"
+            rotation="-90 0 0"
+            width="9"
+            height="1000"
+            color="#383B42">
+        </a-plane>
+
+
+        <!-- LANE DIVIDERS -->
+        <a-entity>
+
+            <!-- LEFT LANE DIVIDER -->
+            <a-box position="-4.5 0.02 0"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="-4.5 0.02 -10"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="-4.5 0.02 -20"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="-4.5 0.02 -30"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="-4.5 0.02 -40"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="-4.5 0.02 -50"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <!-- RIGHT LANE DIVIDER -->
+            <a-box position="4.5 0.02 0"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="4.5 0.02 -10"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="4.5 0.02 -20"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="4.5 0.02 -30"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="4.5 0.02 -40"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <a-box position="4.5 0.02 -50"
+                width="0.15" height="0.03" depth="4"
+                color="#FFFFFF"></a-box>
+
+            <!-- SHOULDER DIVIDER -->
+            <a-box position="13.5 0.02 0"
+            width="0.15" height="0.03" depth="1000"
+            color="#FFFFFF"></a-box>
+
+            <!-- CENTER DIVIDER -->
+            <a-box position="-13.5 0.02 0"
+            width="0.15" height="0.03" depth="1000"
+            color="#FFCC00"></a-box>
+
+        </a-entity>
+
+        <!-- CAMERA -->
+        <a-camera position="0 2 0"></a-camera>
+
+    </a-scene>
+</body>
+</html>
